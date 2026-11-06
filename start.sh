@@ -33,7 +33,6 @@ backend_setup() {
   . .venv/bin/activate
   pip install -q -r requirements.txt
   python manage.py migrate -v0
-  python manage.py import_exercise_list >/dev/null
 }
 
 echo "▶ updating from GitHub…"
@@ -47,13 +46,12 @@ cd "$BACK"
 . .venv/bin/activate
 pip install -q -r requirements.txt
 python manage.py migrate -v0
-python manage.py seed_exercises
-if [ ! -f .cache/fedb-imported ]; then
-  [ -d .cache/free-exercise-db ] || { echo "▶ downloading exercise images (free-exercise-db, public domain)…"; git clone --depth 1 https://github.com/yuhonas/free-exercise-db.git .cache/free-exercise-db; }
-  python manage.py import_free_exercise_db .cache/free-exercise-db --images
-  touch .cache/fedb-imported
+# The exercise bank starts empty: users add their own. Clear any old seeded rows once.
+mkdir -p .cache
+if [ ! -f .cache/bank-cleared ]; then
+  python manage.py clear_exercise_bank
+  touch .cache/bank-cleared
 fi
-python manage.py import_exercise_list
 python manage.py runserver 127.0.0.1:8000 &
 PIDS=($!)
 

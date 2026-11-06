@@ -26,15 +26,10 @@ python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
 python manage.py migrate
-python manage.py seed_exercises            # curated Persian exercises
-python manage.py import_exercise_list      # the exercise list from apps/exercises/data
 python manage.py runserver 127.0.0.1:8000
 python manage.py test tests
 ```
 
-Optional images (public-domain free-exercise-db), before `import_exercise_list`:
-
-```bash
-git clone --depth 1 https://github.com/yuhonas/free-exercise-db.git .cache/free-exercise-db
-python manage.py import_free_exercise_db .cache/free-exercise-db --images
-```
+The exercise bank starts empty; users add their own exercises in the app.
+`python manage.py seed_exercises` still exists for tests and demos, and
+`python manage.py clear_exercise_bank` empties the bank again.
