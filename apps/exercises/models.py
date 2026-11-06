@@ -27,6 +27,8 @@ class ExerciseTemplate(models.Model):
     is_custom = models.BooleanField(default=False)
     # False hides a built-in from the bank and picker; workouts that already use it still resolve.
     listed = models.BooleanField(default=True)
+    # Where the thumbnail came from (URL or data/ path), so a changed image in data/exercises.csv is re-fetched.
+    image_source = models.CharField(max_length=500, blank=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE, related_name="custom_exercises"
     )

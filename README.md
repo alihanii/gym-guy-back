@@ -30,6 +30,6 @@ python manage.py runserver 127.0.0.1:8000
 python manage.py test tests
 ```
 
-The exercise bank starts empty; users add their own exercises in the app.
-`python manage.py seed_exercises` still exists for tests and demos, and
-`python manage.py clear_exercise_bank` empties the bank again.
+The exercise bank comes from `data/exercises.csv` (English name, Persian title,
+muscle group, image). Edit that file and restart; see `data/README.md`.
+`python manage.py import_exercise_list --images` loads it by hand.

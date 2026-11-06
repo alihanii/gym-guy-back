@@ -33,6 +33,7 @@ backend_setup() {
   . .venv/bin/activate
   pip install -q -r requirements.txt
   python manage.py migrate -v0
+  python manage.py import_exercise_list --images
 }
 
 echo "▶ updating from GitHub…"
@@ -46,12 +47,8 @@ cd "$BACK"
 . .venv/bin/activate
 pip install -q -r requirements.txt
 python manage.py migrate -v0
-# The exercise bank starts empty: users add their own. Clear any old seeded rows once.
-mkdir -p .cache
-if [ ! -f .cache/bank-cleared ]; then
-  python manage.py clear_exercise_bank
-  touch .cache/bank-cleared
-fi
+# Exercise bank = apps/exercises/data/exercise_list.csv. Images download once into media/.
+python manage.py import_exercise_list --images
 python manage.py runserver 127.0.0.1:8000 &
 PIDS=($!)
 
