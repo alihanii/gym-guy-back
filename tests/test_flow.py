@@ -97,6 +97,12 @@ class CoreFlowTests(TestCase):
         self.assertEqual(mon["actual_heatmap"]["chest"], 1.0)
         self.assertEqual(mon["compliance"], 50)
 
+        # coach removes the student: routines leave the athlete, logged workouts stay
+        self.assertEqual(self.coach.delete(f"/api/coach/clients/{client['id']}/").status_code, 204)
+        self.assertEqual(self.athlete.get("/api/routines/").data, [])
+        self.assertEqual(len(self.athlete.get("/api/workouts/").data), 1)
+        self.assertEqual(self.coach.get("/api/coach/clients/").data, [])
+
     def test_records_and_previous_sets(self):
         def log(weight, reps):
             return self.athlete.post("/api/workouts/", {

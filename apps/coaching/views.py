@@ -34,6 +34,16 @@ class ClientViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(coach=self.request.user)
 
+    def perform_destroy(self, client):
+        """Removing a student ends coaching: their programs are archived and leave the athlete's routines.
+        Workouts the athlete already logged stay theirs."""
+        for program in client.programs.all():
+            program.routines.all().delete()
+            program.status = ProgramStatus.ARCHIVED
+            program.invite_code = None
+            program.save(update_fields=["status", "invite_code"])
+        client.delete()
+
     @action(detail=True)
     def monitor(self, request, pk=None):
         """Planned vs actual muscle volume for the last 7 days, compliance and recent logs."""
